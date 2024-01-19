@@ -12,7 +12,6 @@ import PostOrderPage from "./pages/PostOrderPage";
 import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
 import { useAuth } from "./AuthContext"; // Update this path
-import axios from "axios";
 function App() {
   const { isLoggedIn } = useAuth();
 
