@@ -12,6 +12,10 @@ import {
 } from "@material-ui/core";
 import { mdiCreditCard } from "@mdi/js";
 import { Link } from "react-router-dom";
+import { useAuth } from "../AuthContext";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+
 const useStyles = makeStyles((theme) => ({
   container: {
     marginTop: theme.spacing(5),
@@ -33,7 +37,35 @@ const useStyles = makeStyles((theme) => ({
 
 const Payment = () => {
   const classes = useStyles();
-  const handleOrder = () => {};
+  const navigate = useNavigate();
+  const { token, userData, updateCart } = useAuth();
+
+  const handleOrder = async () => {
+    const cartId = localStorage.getItem("cartId");
+    const url = `http://localhost:3000/api/v1/carts/${cartId}`;
+
+    try {
+      const response = await axios.delete(url, {
+        headers: {
+          Authorization: token,
+          // Add other headers if needed
+        },
+      });
+
+      // Check the response status and handle accordingly
+      if (response.status === 200) {
+        console.log(`Cart with ID ${cartId} deleted successfully`);
+        updateCart([]);
+        navigate("/orderplaced");
+      } else {
+        console.error(`Error deleting cart with ID ${cartId}`);
+      }
+    } catch (error) {
+      console.error(
+        `An error occurred while deleting cart with ID ${cartId}: ${error.message}`
+      );
+    }
+  };
   return (
     <Container className={classes.container}>
       <Typography variant="h1" gutterBottom>
@@ -84,15 +116,14 @@ const Payment = () => {
               />
             </Grid>
             <Grid item xs={12}>
-              <Link
-                to="/orderplaced"
+              <Button
                 variant="contained"
                 color="primary"
                 className={classes.button}
                 onClick={handleOrder}
               >
                 Pay Now
-              </Link>
+              </Button>
             </Grid>
           </Grid>
         </form>

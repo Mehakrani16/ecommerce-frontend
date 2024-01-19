@@ -62,7 +62,7 @@ const Cart = () => {
         );
 
         setCartData(response.data.cart.products);
-
+        localStorage.setItem("cartId", response.data.cart._id);
         // Fetch product details for all products in the cart
         const productPromises = response.data.cart.products.map((product) =>
           axios.get(
